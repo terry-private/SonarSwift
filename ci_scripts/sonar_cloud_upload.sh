@@ -15,8 +15,14 @@ brew install sonar-scanner jq || {
 
 cd "$CI_PRIMARY_REPOSITORY_PATH"
 
-# TAG情報をバージョンとする
-APP_VERSION=$CI_TAG
+# APP_VERSIONとBRANCH_NAMEの動的設定
+if [ "$CI_WORKFLOW" = "Tag Metrics" ]; then
+    APP_VERSION=$CI_TAG
+    BRANCH_NAME=$CI_TAG
+else
+    APP_VERSION=$CI_BUILD_NUMBER
+    BRANCH_NAME=$CI_BRANCH
+fi
 
 echo "Using app version: $APP_VERSION"
 
@@ -101,7 +107,7 @@ command -v sonar-scanner >/dev/null 2>&1 || {
 sonar-scanner \
   -Dsonar.token="$SONAR_TOKEN" \
   -Dsonar.working.directory="$TEMP_DIR/.scannerwork" \
-  -Dsonar.branch.name="$APP_VERSION" \
+  -Dsonar.branch.name="$BRANCH_NAME" \
   -Dproject.settings="$TEMP_DIR/sonar-project.properties" \
   -Dsonar.scm.disabled=true \
   -X
