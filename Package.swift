@@ -5,17 +5,27 @@ import PackageDescription
 
 let package = Package(
     name: "SonarSwift",
+    platforms: [.iOS(.v18)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "SonarSwift",
-            targets: ["SonarSwift"]),
+            targets: ["SonarSwift"]
+        ),
+        .library(
+            name: "Feature",
+            targets: ["Feature"]
+        )
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "SonarSwift"),
+        .target(
+            name: "Feature",
+            dependencies: ["SonarSwift"]
+        ),
         .testTarget(
             name: "SonarSwiftTests",
             dependencies: ["SonarSwift"]

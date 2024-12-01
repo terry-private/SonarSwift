@@ -23,6 +23,6 @@
 /// gcd(Int.max, 1) // 1
 /// // gcd(Int.min, 0) // 実行するとクラッシュします
 /// ```
-func gcd(_ lhs: Int, _ rhs: Int) -> Int {
+public func gcd(_ lhs: Int, _ rhs: Int) -> Int {
     rhs == 0 ? abs(lhs) : gcd(rhs, lhs % rhs)
 }
