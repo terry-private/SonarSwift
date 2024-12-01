@@ -8,10 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		DE51C96B2CFC762D00DE8E7A /* Feature in Frameworks */ = {isa = PBXBuildFile; productRef = DE51C96A2CFC762D00DE8E7A /* Feature */; };
+		DE51C9822CFC7D0F00DE8E7A /* MainTest.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = DE51C9812CFC7D0F00DE8E7A /* MainTest.xctestplan */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		DE51C9512CFC6DFB00DE8E7A /* Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE51C9812CFC7D0F00DE8E7A /* MainTest.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = MainTest.xctestplan; path = ../MainTest.xctestplan; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -37,6 +39,7 @@
 		DE51C9482CFC6DFB00DE8E7A = {
 			isa = PBXGroup;
 			children = (
+				DE51C9812CFC7D0F00DE8E7A /* MainTest.xctestplan */,
 				DE51C9532CFC6DFB00DE8E7A /* Sample */,
 				DE51C9622CFC6E2700DE8E7A /* Frameworks */,
 				DE51C9522CFC6DFB00DE8E7A /* Products */,
@@ -124,6 +127,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE51C9822CFC7D0F00DE8E7A /* MainTest.xctestplan in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,6 +275,7 @@
 				DEVELOPMENT_TEAM = 58F4SK879Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = SonarSwiftSample;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -283,6 +288,10 @@
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = terry.SonarSwift.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -302,6 +311,7 @@
 				DEVELOPMENT_TEAM = 58F4SK879Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = SonarSwiftSample;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -314,6 +324,10 @@
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = terry.SonarSwift.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
