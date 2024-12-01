@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "00FD6568-9E7A-4A99-A65D-C39A26EF0DFA",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:..\/..",
+        "identifier" : "SonarSwiftTests",
+        "name" : "SonarSwiftTests"
+      }
+    }
+  ],
+  "version" : 1
+}
