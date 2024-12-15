@@ -19,6 +19,9 @@ cd "$CI_PRIMARY_REPOSITORY_PATH"
 if [ "$CI_WORKFLOW" = "Tag Metrics" ]; then
     APP_VERSION=$CI_TAG
     BRANCH_NAME=$CI_TAG
+elif [ "$CI_WORKFLOW" = "Release Metrics" ]; then
+    APP_VERSION=$CI_TAG
+    BRANCH_NAME="release"
 else
     APP_VERSION=$CI_BUILD_NUMBER
     BRANCH_NAME=$CI_BRANCH
