@@ -5,7 +5,7 @@ set -e
 echo "⭐️Environment variables:"
 echo "Current directory: $(pwd)"
 echo "CI: $CI"
-echo "CCI_BUILD_ID: $CI_BUILD_ID"
+echo "CI_BUILD_ID: $CI_BUILD_ID"
 echo "CI_BUILD_NUMBER: $CI_BUILD_NUMBER"
 echo "CI_BUILD_URL: $CI_BUILD_URL"
 echo "CI_BUNDLE_ID: $CI_BUNDLE_ID"
@@ -93,6 +93,11 @@ COVERAGE_FILE="$TEMP_DIR/coverage.xml"
     
     echo '</coverage>'
 } > "$COVERAGE_FILE"
+
+echo "⭐️Generated Coverage Files:"
+ls -l "$TEMP_DIR"
+echo "\n--- Coverage XML Contents (first 50 lines) ---"
+head -n 50 "$COVERAGE_FILE"
 
 PROJECT_NAME="SonarSwift"
 
