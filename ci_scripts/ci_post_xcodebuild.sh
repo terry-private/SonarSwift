@@ -57,6 +57,10 @@ if [ "$CI_XCODEBUILD_ACTION" != "test-without-building" ]; then
     exit 0
 fi
 
+# デフォルトのリポジトリパス
+# FIXME: test-without-buildingのタイミングだとCI_PRIMARY_REPOSITORY_PATHが空になるので暫定対応
+REPO_PATH="/Volumes/workspace/repository"
+
 echo "⭐️Install sonar-scanner..."
 # 必要なツールのインストール
 brew install sonar-scanner jq || {
@@ -66,7 +70,7 @@ brew install sonar-scanner jq || {
 
 echo "⭐️Starting SonarCloud coverage upload process..."
 # プロジェクトのルートディレクトリに移動
-cd "$CI_PRIMARY_REPOSITORY_PATH"
+cd "$REPO_PATH"
 
 # SonarCloud用の一時ディレクトリとファイル設定
 TEMP_DIR="$CI_DERIVED_DATA_PATH/sonar_temp"
@@ -106,7 +110,7 @@ cat > "$TEMP_DIR/sonar-project.properties" << EOF
 sonar.projectKey=${SONAR_PROJECT_KEY}
 sonar.organization=${SONAR_ORGANIZATION}
 sonar.host.url=https://sonarcloud.io
-sonar.sources=${CI_PRIMARY_REPOSITORY_PATH}
+sonar.sources=${REPO_PATH}
 sonar.swift.coverage.reportPath=${COVERAGE_FILE}
 sonar.coverageReportPaths=${COVERAGE_FILE}
 sonar.exclusions=**/*.generated.swift,**/Pods/**/*,**/*.pb.swift,**/*Tests/**,**Package.swift
