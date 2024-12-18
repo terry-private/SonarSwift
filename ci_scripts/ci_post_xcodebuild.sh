@@ -109,7 +109,7 @@ sonar.test.inclusions=**/*Tests/**
 sonar.swift.file.suffixes=.swift
 sonar.scm.provider=git
 sonar.sourceEncoding=UTF-8
-sonar.projectVersion=${$CI_BUILD_NUMBER}
+sonar.projectVersion=${CI_BUILD_NUMBER}
 sonar.projectName=${PROJECT_NAME}
 sonar.verbose=true
 EOF
