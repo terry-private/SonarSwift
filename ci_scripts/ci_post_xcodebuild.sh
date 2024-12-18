@@ -59,22 +59,21 @@ cd "$CI_PRIMARY_REPOSITORY_PATH"
 # 複数の場所で.xcresultを検索
 echo "⭐️Searching for xcresult files in multiple locations..."
 SEARCH_PATHS=(
-    "$CI_DERIVED_DATA_PATH/Logs/Test"
-    "$CI_DERIVED_DATA_PATH/Build"
-    "$CI_DERIVED_DATA_PATH"
+    "$CI_WORKSPACE_PATH/Logs/Test"
+    "$CI_WORKSPACE_PATH/Build"
+    "$CI_WORKSPACE_PATH"
 )
-RESULT_BUNDLE_PATH=$CI_DERIVED_DATA_PATH/Logs/Test/ResultBundle.xcresult
 
 # ファイルまたはディレクトリの存在を確認
-if [ -e "$RESULT_BUNDLE_PATH" ]; then
-    echo "✅ ResultBundleが見つかりました: $RESULT_BUNDLE_PATH"
+if [ -e "$CI_RESULT_BUNDLE_PATH" ]; then
+    echo "✅ ResultBundleが見つかりました: $CI_RESULT_BUNDLE_PATH"
     # オプション: ファイルの詳細情報を表示
-    ls -l "$RESULT_BUNDLE_PATH"
+    ls -l "$CI_RESULT_BUNDLE_PATH"
 else
-    echo "❌ ResultBundleが見つかりませんでした: $RESULT_BUNDLE_PATH"
+    echo "❌ ResultBundleが見つかりませんでした: $CI_RESULT_BUNDLE_PATH"
 fi
 
-XCRESULT_PATH=""
+XCRESULT_PATH="$CI_RESULT_BUNDLE_PATH"
 for path in "${SEARCH_PATHS[@]}"; do
     echo "⭐️Searching in: $path"
     if [ -d "$path" ]; then
