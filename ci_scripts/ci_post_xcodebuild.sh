@@ -51,32 +51,26 @@ echo "CI_ARCHIVE_PATH: $CI_ARCHIVE_PATH"
 echo "CI_DEVELOPMENT_SIGNED_APP_PATH: $CI_DEVELOPMENT_SIGNED_APP_PATH"
 echo "CI_DEVELOPER_ID_SIGNED_APP_PATH: $CI_DEVELOPER_ID_SIGNED_APP_PATH"
 
-# ディレクトリパス
-BASE_DIR="/Volumes/workspace/repository"
+# ビルドのフェーズ時にソースを保存するディレクトリ
+BACKUP_SOURCE_DIR="/tmp/xcode_cloud_source_backup"
 
-# ディレクトリ構造を出力（findとlsを使用）
-echo "🗂️ ディレクトリ構造:"
-cd "$BASE_DIR"
-find . -maxdepth 6 -type d | sort | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
+# build-for-testingの場合、ソースをバックアップ
+if [ "$CI_XCODEBUILD_ACTION" == "build-for-testing" ]; then
+    echo "🔄 Backing up sources for later use"
+    mkdir -p "$BACKUP_SOURCE_DIR"
+    cp -R "$CI_PRIMARY_REPOSITORY_PATH"/* "$BACKUP_SOURCE_DIR/"
+fi
 
-echo -e "\n\n📄 全ファイルリスト (相対パス):"
-find . -type f | sort
-
-echo -e "\n\n📊 ディレクトリとファイルのサマリ:"
-echo "総ディレクトリ数:"
-find . -type d | wc -l
-
-echo "総ファイル数:"
-find . -type f | wc -l
-
-echo -e "\n\n🔍 ファイル拡張子の分布:"
-find . -type f | sed -e 's/.*\.//' | sort | uniq -c | sort -rn
-
-echo -e "\n\n📋 各ディレクトリの直下のファイルとサブディレクトリ:"
-for dir in */; do
-    echo -e "\n${dir}内容:"
-    ls -1 "$dir"
-done
+# test-without-buildingの場合、バックアップからソースを復元
+if [ "$CI_XCODEBUILD_ACTION" == "test-without-building" ]; then
+    if [ -d "$BACKUP_SOURCE_DIR" ]; then
+        echo "🔍 Restoring sources from backup"
+        cp -R "$BACKUP_SOURCE_DIR"/* "$CI_PRIMARY_REPOSITORY_PATH/"
+    else
+        echo "❌ No source backup found. Cannot proceed."
+        exit 1
+    fi
+fi
 
 # CI_XCODEBUILD_ACTIONがtest-without-buildingではないため終了
 if [ "$CI_XCODEBUILD_ACTION" != "test-without-building" ]; then
@@ -96,8 +90,6 @@ brew install sonar-scanner jq || {
 }
 
 echo "⭐️Starting SonarCloud coverage upload process..."
-# プロジェクトのルートディレクトリに移動
-cd "$REPO_PATH"
 
 # SonarCloud用の一時ディレクトリとファイル設定
 TEMP_DIR="$CI_DERIVED_DATA_PATH/sonar_temp"
