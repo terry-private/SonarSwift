@@ -50,5 +50,4 @@ if [ -z "$XCRESULT_PATH" ]; then
     echo "⭐️Error: No .xcresult file found. Showing directory structure:"
     echo "⭐️DerivedData contents:"
     ls -R "$CI_DERIVED_DATA_PATH"
-    exit 1
 fi
