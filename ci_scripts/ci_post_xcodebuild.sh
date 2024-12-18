@@ -61,17 +61,6 @@ if [ "$CI_XCODEBUILD_ACTION" == "build-for-testing" ]; then
     cp -R "$CI_PRIMARY_REPOSITORY_PATH"/* "$BACKUP_SOURCE_DIR/"
 fi
 
-# test-without-buildingの場合、バックアップからソースを復元
-if [ "$CI_XCODEBUILD_ACTION" == "test-without-building" ]; then
-    if [ -d "$BACKUP_SOURCE_DIR" ]; then
-        echo "🔍 Restoring sources from backup"
-        cp -R "$BACKUP_SOURCE_DIR"/* "$CI_PRIMARY_REPOSITORY_PATH/"
-    else
-        echo "❌ No source backup found. Cannot proceed."
-        exit 1
-    fi
-fi
-
 # CI_XCODEBUILD_ACTIONがtest-without-buildingではないため終了
 if [ "$CI_XCODEBUILD_ACTION" != "test-without-building" ]; then
     echo "Exiting because $CI_XCODEBUILD_ACTION is not 'test-without-building'."
@@ -81,6 +70,16 @@ fi
 # デフォルトのリポジトリパス
 # FIXME: test-without-buildingのタイミングだとCI_PRIMARY_REPOSITORY_PATHが空になるので暫定対応
 REPO_PATH="/Volumes/workspace/repository"
+# test-without-buildingの場合、バックアップからソースを復元
+if [ "$CI_XCODEBUILD_ACTION" == "test-without-building" ]; then
+    if [ -d "$BACKUP_SOURCE_DIR" ]; then
+        echo "🔍 Restoring sources from backup"
+        cp -R "$BACKUP_SOURCE_DIR"/* "$REPO_PATH/"
+    else
+        echo "❌ No source backup found. Cannot proceed."
+        exit 1
+    fi
+fi
 
 echo "⭐️Install sonar-scanner..."
 # 必要なツールのインストール
