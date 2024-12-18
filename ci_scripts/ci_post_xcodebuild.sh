@@ -109,7 +109,7 @@ sonar.test.inclusions=**/*Tests/**
 sonar.swift.file.suffixes=.swift
 sonar.scm.provider=git
 sonar.sourceEncoding=UTF-8
-sonar.projectVersion=${APP_VERSION}
+sonar.projectVersion=${$CI_BUILD_NUMBER}
 sonar.projectName=${PROJECT_NAME}
 sonar.verbose=true
 EOF
@@ -124,7 +124,7 @@ command -v sonar-scanner >/dev/null 2>&1 || {
 sonar-scanner \
   -Dsonar.token="$SONAR_TOKEN" \
   -Dsonar.working.directory="$TEMP_DIR/.scannerwork" \
-  -Dsonar.branch.name="$BRANCH_NAME" \
+  -Dsonar.branch.name="inspect" \
   -Dproject.settings="$TEMP_DIR/sonar-project.properties" \
   -Dsonar.scm.disabled=true \
   -X
