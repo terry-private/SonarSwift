@@ -50,3 +50,30 @@ echo "CI_APP_STORE_SIGNED_APP_PATH: $CI_APP_STORE_SIGNED_APP_PATH"
 echo "CI_ARCHIVE_PATH: $CI_ARCHIVE_PATH"
 echo "CI_DEVELOPMENT_SIGNED_APP_PATH: $CI_DEVELOPMENT_SIGNED_APP_PATH"
 echo "CI_DEVELOPER_ID_SIGNED_APP_PATH: $CI_DEVELOPER_ID_SIGNED_APP_PATH"
+
+# ディレクトリパス
+BASE_DIR="/Volumes/workspace/repository"
+
+# ディレクトリ構造を出力（findとlsを使用）
+echo "🗂️ ディレクトリ構造:"
+cd "$BASE_DIR"
+find . -maxdepth 6 -type d | sort | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
+
+echo -e "\n\n📄 全ファイルリスト (相対パス):"
+find . -type f | sort
+
+echo -e "\n\n📊 ディレクトリとファイルのサマリ:"
+echo "総ディレクトリ数:"
+find . -type d | wc -l
+
+echo "総ファイル数:"
+find . -type f | wc -l
+
+echo -e "\n\n🔍 ファイル拡張子の分布:"
+find . -type f | sed -e 's/.*\.//' | sort | uniq -c | sort -rn
+
+echo -e "\n\n📋 各ディレクトリの直下のファイルとサブディレクトリ:"
+for dir in */; do
+    echo -e "\n${dir}内容:"
+    ls -1 "$dir"
+done
