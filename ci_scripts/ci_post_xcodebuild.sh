@@ -51,44 +51,77 @@ echo "CI_ARCHIVE_PATH: $CI_ARCHIVE_PATH"
 echo "CI_DEVELOPMENT_SIGNED_APP_PATH: $CI_DEVELOPMENT_SIGNED_APP_PATH"
 echo "CI_DEVELOPER_ID_SIGNED_APP_PATH: $CI_DEVELOPER_ID_SIGNED_APP_PATH"
 
-echo "⭐️Starting SonarCloud coverage upload process..."
 
+echo "⭐️Install sonar-scanner..."
+# 必要なツールのインストール
+brew install sonar-scanner jq || {
+    echo "Failed to install sonar-scanner or jq"
+    exit 1
+}
+
+echo "⭐️Starting SonarCloud coverage upload process..."
 # プロジェクトのルートディレクトリに移動
 cd "$CI_PRIMARY_REPOSITORY_PATH"
 
-# 複数の場所で.xcresultを検索
-echo "⭐️Searching for xcresult files in multiple locations..."
-SEARCH_PATHS=(
-    "$CI_WORKSPACE_PATH/Logs/Test"
-    "$CI_WORKSPACE_PATH/Build"
-    "$CI_WORKSPACE_PATH"
-)
+# SonarCloud用の一時ディレクトリとファイル設定
+TEMP_DIR="$CI_DERIVED_DATA_PATH/sonar_temp"
+mkdir -p "$TEMP_DIR"
+COVERAGE_FILE="$TEMP_DIR/coverage.xml"
 
-# ファイルまたはディレクトリの存在を確認
-if [ -e "$CI_RESULT_BUNDLE_PATH" ]; then
-    echo "✅ ResultBundleが見つかりました: $CI_RESULT_BUNDLE_PATH"
-    # オプション: ファイルの詳細情報を表示
-    ls -l "$CI_RESULT_BUNDLE_PATH"
-else
-    echo "❌ ResultBundleが見つかりませんでした: $CI_RESULT_BUNDLE_PATH"
-fi
+# カバレッジレポート生成
+{
+    echo '<?xml version="1.0" ?>'
+    echo '<coverage version="1">'
+    
+    xcrun xccov view --report --json "$CI_RESULT_BUNDLE_PATH" > "$TEMP_DIR/coverage.json"
+    
+    jq -r '.targets[] | select(.name != null) | .files[] | select(.path != null and (.path | endswith(".swift")) and (.path | contains("Test") | not)) | 
+        .path as $path | .functions[] | 
+        "\($path)|\(.coveredLines)|\(.executableLines)"' "$TEMP_DIR/coverage.json" | while IFS='|' read -r file_path covered_lines total_lines; do
+        echo "  <file path=\"$file_path\">"
+        for line in $(seq 1 $total_lines); do
+            covered=$([[ $line -le $covered_lines ]] && echo "true" || echo "false")
+            echo "    <lineToCover lineNumber=\"$line\" covered=\"$covered\"/>"
+        done
+        echo "  </file>"
+    done
+    
+    echo '</coverage>'
+} > "$COVERAGE_FILE"
 
-XCRESULT_PATH="$CI_RESULT_BUNDLE_PATH"
-for path in "${SEARCH_PATHS[@]}"; do
-    echo "⭐️Searching in: $path"
-    if [ -d "$path" ]; then
-        ls -la "$path"
-        FOUND_PATH=$(find "$path" -name "*.xcresult" -type d 2>/dev/null | head -n 1)
-        if [ ! -z "$FOUND_PATH" ]; then
-            XCRESULT_PATH="$FOUND_PATH"
-            echo "⭐️⭐️⭐️Found xcresult at: $XCRESULT_PATH"
-            break
-        fi
-    fi
-done
+PROJECT_NAME="SonarSwift"
 
-if [ -z "$XCRESULT_PATH" ]; then
-    echo "⭐️Error: No .xcresult file found. Showing directory structure:"
-    echo "⭐️DerivedData contents:"
-    ls -R "$CI_DERIVED_DATA_PATH"
-fi
+# sonar-project.properties生成
+cat > "$TEMP_DIR/sonar-project.properties" << EOF
+sonar.projectKey=${SONAR_PROJECT_KEY}
+sonar.organization=${SONAR_ORGANIZATION}
+sonar.host.url=https://sonarcloud.io
+sonar.sources=${CI_PRIMARY_REPOSITORY_PATH}
+sonar.swift.coverage.reportPath=${COVERAGE_FILE}
+sonar.coverageReportPaths=${COVERAGE_FILE}
+sonar.exclusions=**/*.generated.swift,**/Pods/**/*,**/*.pb.swift,**/*Tests/**,**Package.swift
+sonar.test.inclusions=**/*Tests/**
+sonar.swift.file.suffixes=.swift
+sonar.scm.provider=git
+sonar.sourceEncoding=UTF-8
+sonar.projectVersion=${APP_VERSION}
+sonar.projectName=${PROJECT_NAME}
+sonar.verbose=true
+EOF
+
+# SonarCloudスキャン実行
+export PATH="$PATH:/usr/local/bin"
+command -v sonar-scanner >/dev/null 2>&1 || {
+    echo "Error: sonar-scanner not found in PATH (PATH: $PATH)"
+    exit 1
+}
+
+sonar-scanner \
+  -Dsonar.token="$SONAR_TOKEN" \
+  -Dsonar.working.directory="$TEMP_DIR/.scannerwork" \
+  -Dsonar.branch.name="$BRANCH_NAME" \
+  -Dproject.settings="$TEMP_DIR/sonar-project.properties" \
+  -Dsonar.scm.disabled=true \
+  -X
+
+echo "Successfully uploaded coverage to SonarCloud"
