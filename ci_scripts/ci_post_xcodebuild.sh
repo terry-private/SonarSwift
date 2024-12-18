@@ -51,6 +51,11 @@ echo "CI_ARCHIVE_PATH: $CI_ARCHIVE_PATH"
 echo "CI_DEVELOPMENT_SIGNED_APP_PATH: $CI_DEVELOPMENT_SIGNED_APP_PATH"
 echo "CI_DEVELOPER_ID_SIGNED_APP_PATH: $CI_DEVELOPER_ID_SIGNED_APP_PATH"
 
+# CI_XCODEBUILD_ACTIONがtest-without-buildingではないため終了
+if [ "$CI_XCODEBUILD_ACTION" != "test-without-building" ]; then
+    echo "Exiting because $CI_XCODEBUILD_ACTION is not 'test-without-building'."
+    exit 0
+fi
 
 echo "⭐️Install sonar-scanner..."
 # 必要なツールのインストール
