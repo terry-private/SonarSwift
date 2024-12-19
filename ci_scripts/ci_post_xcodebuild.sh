@@ -52,7 +52,7 @@ echo "CI_DEVELOPMENT_SIGNED_APP_PATH: $CI_DEVELOPMENT_SIGNED_APP_PATH"
 echo "CI_DEVELOPER_ID_SIGNED_APP_PATH: $CI_DEVELOPER_ID_SIGNED_APP_PATH"
 
 # ビルドのフェーズ時にソースを保存するディレクトリ
-BACKUP_SOURCE_DIR="/Volumes/tmp/xcode_cloud_source_backup"
+BACKUP_SOURCE_DIR="$CI_WORKSPACE/source_backup"
 
 # build-for-testingの場合、ソースをバックアップ
 if [ "$CI_XCODEBUILD_ACTION" == "build-for-testing" ]; then
